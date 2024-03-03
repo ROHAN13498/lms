@@ -2,11 +2,19 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
-import { ArrowDownRightFromCircle } from "lucide-react";
+import {
+  ArrowDownRightFromCircle,
+  Banknote,
+  LayoutList,
+  Paperclip,
+} from "lucide-react";
 
-import {DescriptionForm} from "./_components/DescriptionForm";
+import { DescriptionForm } from "./_components/DescriptionForm";
 import { TitleForm } from "./_components/TitleForm";
 import { ImageForm } from "./_components/ImageForm";
+import { CategoryForm } from "./_components/CategoryForm";
+import { PriceForm } from "./_components/PriceForm";
+import { AttachmentForm } from "./_components/AttachmentForm";
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
@@ -18,6 +26,17 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const course = await db.course.findUnique({
     where: {
       id: params.courseId,
+    },
+    include: {
+      attachments: {
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+
+  const categories = await db.category.findMany({
+    orderBy: {
+      name: "asc",
     },
   });
 
@@ -52,11 +71,43 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
         <div>
           <div className="flex gap-x-2 items-baseline">
             <ArrowDownRightFromCircle className="size-[25px]" />
-            <h2 className="text-xl">Customize your course</h2>
+            <h2 className="text-2xl">Customize your course</h2>
           </div>
           <TitleForm initialData={course} courseId={params.courseId} />
           <DescriptionForm initialData={course} courseId={params.courseId} />
-          <ImageForm initialData={course} courseId={params.courseId}/>
+          <ImageForm initialData={course} courseId={params.courseId} />
+          <CategoryForm
+            initialData={course}
+            courseId={params.courseId}
+            options={categories.map((category) => ({
+              label: category.name,
+              value: category.id,
+            }))}
+          />
+        </div>
+        <div className="space-y-6">
+          <div>
+            <div className="flex items-center gap-x-2">
+              <LayoutList />
+              <h2 className="text-2xl">Course Chapters</h2>
+            </div>
+          </div>
+          <div>
+            <div>
+              <div className="flex items-center gap-x-2">
+                <Banknote />
+                <div className="text-xl">Price</div>
+              </div>
+              <PriceForm initialData={course} courseId={params.courseId} />
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <Paperclip />
+              <h2 className="text-xl">Attachments</h2>
+            </div>
+            <AttachmentForm initialData={course} courseId={params.courseId} />
+          </div>
         </div>
       </div>
     </div>
