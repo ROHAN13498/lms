@@ -13,7 +13,7 @@ export async function PATCH(req:NextRequest,{params}:{params:{courseId:string}})
         const values=await req.json();
     
         if(!userId){
-            return  NextResponse.json({message:"Unothorised"},{status:401})
+            return  NextResponse.json({message:"Unauthorised"},{status:401})
         }
 
         const course=await db.course.findUnique({

@@ -9,12 +9,13 @@ import {
   Paperclip,
 } from "lucide-react";
 
-import { DescriptionForm } from "./_components/DescriptionForm";
-import { TitleForm } from "./_components/TitleForm";
-import { ImageForm } from "./_components/ImageForm";
-import { CategoryForm } from "./_components/CategoryForm";
-import { PriceForm } from "./_components/PriceForm";
 import { AttachmentForm } from "./_components/AttachmentForm";
+import { CategoryForm } from "./_components/CategoryForm";
+import { ChapterForm } from "./_components/ChapterForm";
+import { DescriptionForm } from "./_components/DescriptionForm";
+import { ImageForm } from "./_components/ImageForm";
+import { PriceForm } from "./_components/PriceForm";
+import { TitleForm } from "./_components/TitleForm";
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
@@ -26,8 +27,14 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const course = await db.course.findUnique({
     where: {
       id: params.courseId,
+      userId,
     },
     include: {
+      chapters: {
+        orderBy: {
+          position: "asc",
+        },
+      },
       attachments: {
         orderBy: { createdAt: "desc" },
       },
@@ -50,6 +57,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     course.imageUrl,
     course.price,
     course.categoryId,
+    course.chapters.some(chapter=>chapter.isPublished),
   ];
 
   const totalFields = requiredFields.length;
@@ -91,6 +99,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
               <LayoutList />
               <h2 className="text-2xl">Course Chapters</h2>
             </div>
+            <ChapterForm initialData={course} courseId={params.courseId} />
           </div>
           <div>
             <div>
