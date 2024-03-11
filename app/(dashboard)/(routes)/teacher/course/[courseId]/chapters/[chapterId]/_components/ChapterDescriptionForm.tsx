@@ -19,23 +19,25 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
-import { Course } from "@prisma/client";
+import { Chapter } from "@prisma/client";
+import { Editor } from "@/components/editor";
+import { Preview } from "@/components/preview";
 
-interface DescriptionFormProps {
-  initialData: Course;
+interface ChapterDescriptionFormProps {
+  initialData: Chapter;
   courseId: string;
+  chapterId: string;
 }
 
 const formSchema = z.object({
-  description: z.string().min(1, {
-    message: "Description is required",
-  }),
+  description: z.string().min(1),
 });
 
-export const DescriptionForm = ({
+export const ChapterDescriptionForm = ({
   initialData,
   courseId,
-}: DescriptionFormProps) => {
+  chapterId,
+}: ChapterDescriptionFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -53,7 +55,10 @@ export const DescriptionForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
+      await axios.patch(
+        `/api/courses/${courseId}/chapter/${chapterId}`,
+        values
+      );
       toast.success("Description updated");
       toggleEdit();
       router.refresh();
@@ -63,9 +68,9 @@ export const DescriptionForm = ({
   };
 
   return (
-    <div className="mt-6 border bg-slate-200 rounded-md p-4">
+    <div className="mt-6 border bg-slate-200 rounded-md p-4 h-full">
       <div className="font-medium flex items-center justify-between">
-        Course description
+        Chapter description
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
@@ -78,14 +83,17 @@ export const DescriptionForm = ({
         </Button>
       </div>
       {!isEditing && (
-        <p
+        <div
           className={cn(
             "text-sm mt-2",
             !initialData.description && "text-slate-500 italic"
           )}
         >
-          {initialData.description || "No description"}
-        </p>
+          {!initialData.description && "No description"}
+          {initialData.description && 
+          <Preview value={initialData.description} />
+          }
+        </div>
       )}
       {isEditing && (
         <Form {...form}>
@@ -99,11 +107,7 @@ export const DescriptionForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
-                      disabled={isSubmitting}
-                      placeholder="e.g. 'This course is about...'"
-                      {...field}
-                    />
+                    <Editor {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -118,5 +122,6 @@ export const DescriptionForm = ({
         </Form>
       )}
     </div>
+ 
   );
 };

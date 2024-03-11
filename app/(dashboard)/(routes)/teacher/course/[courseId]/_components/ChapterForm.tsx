@@ -78,7 +78,7 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="mt-6 border bg-slate-200 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
         Course description
         <Button onClick={toogleCreating} variant="ghost">

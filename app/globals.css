@@ -78,4 +78,9 @@ html,body:root{
     @apply bg-background text-foreground;
   }
 }
+
+.ql-editor {
+  overflow-y: scroll;
+  min-height: 300px;
+}
 @import "~@uploadthing/react/styles.css"
