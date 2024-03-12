@@ -3,12 +3,16 @@ import Mux from "@mux/mux-node"
 import { auth } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from "next/server"
 
-const { Video } = new Mux(process.env.MUX_TOKEN_ID!,process.env.MUX_TOKEN_SECRET!);
+const {video} = new Mux({
+    tokenId: process.env.MUX_TOKEN_ID,
+    tokenSecret: process.env.MUX_TOKEN_SECRET!,
+});
 
 export async function PATCH(req:NextRequest,{params}:{params:{chapterId:string,courseId:string}}){
 
     try {
         const {chapterId,courseId}=params;
+    
     
         const {userId}=auth()
     
@@ -21,7 +25,7 @@ export async function PATCH(req:NextRequest,{params}:{params:{chapterId:string,c
         const course=await db.course.findUnique({
             where:{
                 id:courseId,
-                // userId
+                userId
             }
         })
 
@@ -45,7 +49,8 @@ export async function PATCH(req:NextRequest,{params}:{params:{chapterId:string,c
                 }
             })
             if(existingMuxdata){
-                await  Video.Assets.del(existingMuxdata.assetId)
+                
+                await  video.assets.delete(existingMuxdata.assetId)
 
                 await db.muxData.delete({
                     where:{
@@ -54,14 +59,15 @@ export async function PATCH(req:NextRequest,{params}:{params:{chapterId:string,c
                 })
 
             }
-
-            const asset=await Video.Assets.create({
-                input:chapter.videoUrl,
-                playback_policy:"public",
-                test:false,
-                
-            })
-        
+            const url=chapter.videoUrl
+            const asset = await video.assets.create({
+                input: [{url:url}], 
+                playback_policy: ["signed"],
+                test: false,
+              });
+              
+            console.log
+            
 
             await db.muxData.create({
                 data:{

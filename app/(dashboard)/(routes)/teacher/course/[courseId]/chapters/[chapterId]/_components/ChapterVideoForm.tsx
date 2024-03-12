@@ -12,6 +12,7 @@ import MuxPlayer from "@mux/mux-player-react";
 
 import { FileUpload } from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
+import VideoPlayer from "./VideoPlayer";
 
 interface ChapterVideoFormProps {
   initialData: Chapter & { muxData?: MuxData | null };
@@ -75,7 +76,7 @@ export const ChapterVideoForm = ({
           </div>
         ) : (
           <div className="relative aspect-video mt-2">
-            <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""} />
+            <VideoPlayer playbackId={initialData?.muxData?.playbackId || ""} />
           </div>
         ))}
       {isEditing && (

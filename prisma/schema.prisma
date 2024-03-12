@@ -59,7 +59,7 @@ model Chapter {
   videoUrl String? @db.Text
   position Int
   muxData MuxData?
-  
+
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
