@@ -85,3 +85,81 @@ export async function PATCH(req:NextRequest,{params}:{params:{chapterId:string,c
     }
 
 }
+
+
+export async function DELETE(req:NextRequest,{params}:{params:{chapterId:string,courseId:string}}) {
+
+    try {
+            const {userId}=auth();
+            if(!userId){
+                return new NextResponse("Unauthorised",{status:401})
+            }
+            const course= await db.course.findUnique({
+                where:{
+                    id:params.courseId,
+                    userId
+                }
+            })    
+
+            if(!course){
+                return new NextResponse("Unauthorised",{status:401})
+            }
+
+            const chapter=await db.chapter.findUnique({
+                where:{
+                    id:params.chapterId,
+                    courseId:params.courseId,
+
+                }
+            })
+
+        if(!chapter){
+            return new NextResponse("Not Found",{status:404});
+        }
+
+        if(chapter.videoUrl){
+            const existingMuxdata=await db.muxData.findFirst({
+                where:{
+                    chapterId:params.chapterId
+                }
+            })
+
+            if(existingMuxdata){
+                await video.assets.delete(existingMuxdata.assetId)
+                await  db.muxData.delete({
+                    where:{
+                        id:existingMuxdata.id
+                    }
+                })
+            }
+
+        }
+        const deleteChapter=await db.chapter.delete({
+            where:{
+                id:params.chapterId
+            }
+        });
+
+       const Chapter=await db.chapter.findMany({
+        where:{
+            courseId:params.courseId
+        }
+       });
+
+       if(!Chapter.length){
+        await db.course.update({
+            where:{
+                id:params.courseId
+            },  
+            data:{
+                isPublished:false
+            }
+        })
+       }
+       return NextResponse.json({deleteChapter})
+    } catch (error) {
+        console.log("Chpater DELETE:",error);
+        return new NextResponse("Internal Sever Error",{status:500})
+    }
+    
+}

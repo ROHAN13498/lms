@@ -1,12 +1,13 @@
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
-import { ArrowDownRightFromCircle, ArrowLeft } from "lucide-react";
+import { ArrowDownRightFromCircle, ArrowLeft, Trash } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 import { ChapterTitleForm } from "./_components/ChapterTitleForm";
 import { ChapterDescriptionForm } from "./_components/ChapterDescriptionForm";
 import { ChapterVideoForm } from "./_components/ChapterVideoForm";
+import ChapterActions from "./_components/ChapterActions";
 
 const page = async ({
   params,
@@ -38,6 +39,8 @@ const page = async ({
 
   const completionText = `(${completeFeilds} / ${totalFeilds})`;
 
+  const isComplete = requiredFields.every(Boolean);
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">
@@ -54,6 +57,8 @@ const page = async ({
               <h1 className="text-2xl font-medium">Chapter Creation</h1>
               <span>Complete all fields {completionText}</span>
             </div>
+            <ChapterActions courseId={params.courseId}
+            chapterId={params.chapterId}/>
           </div>
         </div>
       </div>
@@ -69,15 +74,17 @@ const page = async ({
             courseId={params.courseId}
             chapterId={params.chapterId}
           />
-          <ChapterVideoForm initialData={chapter}
-            courseId={params.courseId}
-            chapterId={params.chapterId} />
-        </div>
-          <ChapterDescriptionForm
+          <ChapterVideoForm
             initialData={chapter}
             courseId={params.courseId}
             chapterId={params.chapterId}
           />
+        </div>
+        <ChapterDescriptionForm
+          initialData={chapter}
+          courseId={params.courseId}
+          chapterId={params.chapterId}
+        />
       </div>
     </div>
   );
