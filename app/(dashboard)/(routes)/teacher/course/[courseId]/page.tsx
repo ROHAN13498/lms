@@ -16,6 +16,7 @@ import { DescriptionForm } from "./_components/DescriptionForm";
 import { ImageForm } from "./_components/ImageForm";
 import { PriceForm } from "./_components/PriceForm";
 import { TitleForm } from "./_components/TitleForm";
+import { ChapterActions } from "./_components/CourseActions";
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
@@ -57,12 +58,14 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     course.imageUrl,
     course.price,
     course.categoryId,
+    course.chapters.length,
   ];
 
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
 
   const completionText = `(${completedFields}/${totalFields})`;
+  const isComplete = requiredFields.every(Boolean);
 
   return (
     <div className="p-6">
@@ -73,6 +76,11 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
             Complete all fields {completionText}
           </span>
         </div>
+        <ChapterActions
+          disabled={!isComplete}
+          courseId={params.courseId}
+          isPublished={course.isPublished}
+        />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
         <div>

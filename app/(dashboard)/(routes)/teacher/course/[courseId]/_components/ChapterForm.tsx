@@ -63,7 +63,7 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
 
   const onEdit = (id: string) => {
     router.push(`/teacher/course/${courseId}/chapters/${id}`);
-  }
+  };
   const onReorder = async (updatedData: { id: string; position: number }[]) => {
     try {
       setIsUpdating(true);
@@ -80,7 +80,7 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
   return (
     <div className="mt-6 border bg-slate-200 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course description
+        Course Chapters
         <Button onClick={toogleCreating} variant="ghost">
           {isCreating ? (
             <>Cancel</>

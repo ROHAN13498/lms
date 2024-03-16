@@ -2,7 +2,14 @@
 
 import { Attachment, Course } from "@prisma/client";
 import axios from "axios";
-import { File, ImageIcon, Loader2, Pencil, PlusCircle, Trash } from "lucide-react";
+import {
+  File,
+  ImageIcon,
+  Loader2,
+  Pencil,
+  PlusCircle,
+  Trash,
+} from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,6 +18,7 @@ import * as z from "zod";
 
 import { FileUpload } from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface AttachmentFormProps {
   initialData: Course & { attachments: Attachment[] };
@@ -26,7 +34,7 @@ export const AttachmentForm = ({
   courseId,
 }: AttachmentFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [deleting,setDeleting]=useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -43,36 +51,29 @@ export const AttachmentForm = ({
     }
   };
 
-  const  handleDelete= async (id:string)=>{
-    setDeleting(true)
+  const handleDelete = async (id: string) => {
+    setDeleting(true);
     try {
       await axios.delete(`/api/courses/${courseId}/attachments/${id}`);
-      toast.success("Attachment Deleted succesfully")
+      toast.success("Attachment Deleted succesfully");
       router.refresh();
     } catch (error) {
-      toast.error("Something Went Wrong!")
+      toast.error("Something Went Wrong!");
+    } finally {
+      setDeleting(false);
     }
-    finally{
-      setDeleting(false)
-    }
-  }
+  };
 
   return (
     <div className="mt-6 border bg-slate-200 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course image
+        Course Attachments
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && (
             <>
               <PlusCircle className="h-4 w-4 mr-2" />
               Add an File
-            </>
-          )}
-          {!isEditing && initialData.imageUrl && (
-            <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit image
             </>
           )}
         </Button>
@@ -89,15 +90,20 @@ export const AttachmentForm = ({
                 >
                   <div className="flex space-x-5">
                     <File className="h-4 w-4   " />
-                    <p className="text-xs line-clamp-1">{attachment.name}</p>
+                    <Link
+                      href={attachment.url}
+                      className="text-xs line-clamp-1"
+                    >
+                      {attachment.name}
+                    </Link>
                   </div>
-                  {
-                    (!deleting) ? (<button onClick={() => handleDelete(attachment.id)}>
-                    <Trash className="h-4 w-4 text-rose-700 hover:scale-150 transition" />
-                  </button>) :
-                  (<Loader2  className="animate-spin" strokeWidth={1.5} />)
-                  }
-                  
+                  {!deleting ? (
+                    <button onClick={() => handleDelete(attachment.id)}>
+                      <Trash className="h-4 w-4 text-rose-700 hover:scale-150 transition" />
+                    </button>
+                  ) : (
+                    <Loader2 className="animate-spin" strokeWidth={1.5} />
+                  )}
                 </div>
               ))}
             </div>
