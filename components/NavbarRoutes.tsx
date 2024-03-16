@@ -12,6 +12,8 @@ const NavbarRoutes = () => {
 
   const isTeacherPage = pathname?.startsWith("/teacher");
   const isPlayerPage = pathname?.startsWith("/chapter");
+
+  const;
   return (
     <div className="flex gap-x-2 ml-auto">
       {isTeacherPage || isPlayerPage ? (

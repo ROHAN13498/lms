@@ -1,8 +1,13 @@
+import { db } from "@/lib/db";
+import Categories from "./_components.tsx/Categories";
 
-const SearchPage = () => {
-  return (
-    <div>SearchPage</div>
-  )
-}
+const SearchPage = async () => {
+  const categories = await db.category.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
+  return <div className="p-6"><Categories items={categories}></Categories></div>;
+};
 
-export default SearchPage
+export default SearchPage;
