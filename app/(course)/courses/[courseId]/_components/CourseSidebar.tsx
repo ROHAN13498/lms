@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import React from "react";
 import CourseSidebarItem from "./CourseSidebarItem";
+import CourseProgress from "@/components/CourseProgress";
 
 interface Props {
   course: Course & {
@@ -21,7 +22,6 @@ const CourseSidebar = async ({ course, progressCount }: Props) => {
   if (!userId) {
     return redirect("/");
   }
-  console.log(course)
   const purchase = await db.purchase.findUnique({
     where: {
       userId_courseId: {
@@ -32,8 +32,13 @@ const CourseSidebar = async ({ course, progressCount }: Props) => {
   });
   return (
     <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
-      <div className="p-8 flex felx-col border-b">
+      <div className="p-8 flex flex-col border-b">
         <h1 className="font-semibold">{course.title}</h1>
+        {purchase && (
+          <div className="mt-3 w-full">
+            <CourseProgress value={progressCount} />
+          </div>
+        )}
       </div>
       <div className="=flex flex-col w-full">
         {course.chapters.map((chapter) => (
@@ -43,7 +48,6 @@ const CourseSidebar = async ({ course, progressCount }: Props) => {
             label={chapter.title}
             courseId={course.id}
             isLocked={!purchase}
-            
           />
         ))}
       </div>

@@ -79,8 +79,7 @@ html,body:root{
   }
 }
 
-.ql-editor {
-  overflow-y: scroll;
-  min-height: 300px;
+.ql-container {
+  height: calc(100% - 42px);
 }
 @import "~@uploadthing/react/styles.css"

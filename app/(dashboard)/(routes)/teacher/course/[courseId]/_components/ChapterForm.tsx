@@ -67,7 +67,7 @@ export const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
   const onReorder = async (updatedData: { id: string; position: number }[]) => {
     try {
       setIsUpdating(true);
-      await axios.put(`/api/courses/${courseId}/chapter/reorder`, {
+      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
         list: updatedData,
       });
     } catch (error) {
