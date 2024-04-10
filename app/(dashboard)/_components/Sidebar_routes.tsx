@@ -21,7 +21,7 @@ const teacherRoutes = [
   {
     icon: List,
     label: "Courses",
-    href: "/teacher/courses",
+    href: "/teacher/course",
   },
   {
     icon: BarChart,
@@ -31,9 +31,9 @@ const teacherRoutes = [
 ];
 const Sidebar_routes = () => {
   const pathname = usePathname();
-  const isTeacherPage=pathname?.startsWith("/teacher");
-  
-  const routes = isTeacherPage ? teacherRoutes :guest_routes;
+  const isTeacherPage = pathname?.startsWith("/teacher");
+
+  const routes = isTeacherPage ? teacherRoutes : guest_routes;
   return (
     <div className="flex flex-col w-full">
       {routes.map((route) => (
