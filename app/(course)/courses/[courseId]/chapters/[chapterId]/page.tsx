@@ -90,9 +90,8 @@ const page = async ({
             <Separator />
             <div className="p-4">
               {attachments.map((attachment) => (
-                <div>
+                <div key={attachment.id}>
                   <a
-                    key={attachment.id}
                     href={attachment.url}
                     target="_blank"
                     className="flex items-center p-3 w-full bg-sky-200 border text-sky-700 rounded-md hover:underline "

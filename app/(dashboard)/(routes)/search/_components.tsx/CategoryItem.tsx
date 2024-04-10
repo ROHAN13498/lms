@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { IconType } from "react-icons";
 import qs from "query-string";
-import { title } from "process";
 
 interface CategoryItemProps {
   label: string;
