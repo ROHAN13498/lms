@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import { UTApi } from "uploadthing/server";
 
-export const utapi = new UTApi();
+const utapi = new UTApi();
 
 interface Props {
   params: { courseId: string; id: string };
