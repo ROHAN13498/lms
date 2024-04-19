@@ -3,8 +3,12 @@ const nextConfig = {
     images: {
         domains: ["utfs.io"]
     },
-    experimental:{
-        serverActions:true
+    webpackDevMiddleware: config => {
+        config.watchOptions = {
+          poll: 1000,
+          aggregateTimeout: 300,
+        }
+        return config
     }
 }
 
