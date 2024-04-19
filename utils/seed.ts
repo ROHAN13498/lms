@@ -1,5 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-const database = new PrismaClient();
+let { PrismaClient } = require('@prisma/client');
+let database = new PrismaClient();
 async function main() {
     try {
         await database.category.createMany({
@@ -23,4 +23,5 @@ async function main() {
     }
 }
 
-main();
+main()
+export {}
